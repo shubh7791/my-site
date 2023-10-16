@@ -10,6 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Debug SSH Configuration
+        run: |
+          echo "SSH_HOST: ${{ secrets.SSH_HOST }}"
+          echo "SSH_USERNAME: ${{ secrets.SSH_USERNAME }}"
+          # Avoid printing the actual key, as it's sensitive information
+          echo "SSH_KEY: [REDACTED]"
+
       - name: Check if PR is merged to main
         id: pr-merged-check
         run: echo "merged=true" >> $GITHUB_ENV
