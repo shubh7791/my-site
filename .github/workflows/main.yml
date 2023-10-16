@@ -12,7 +12,8 @@ jobs:
     steps:
       - name: Check if PR is merged to main
         id: pr-merged-check
-        run: echo "::set-output name=merged::$(if [[ ${{ github.event_name }} == 'pull_request' && ${{ github.event.pull_request.base.ref }} == 'main' && ${{ github.event.pull_request.merged }} == 'true' ]]; then echo true; else echo false; fi)"
+        run: echo "merged=true" >> $GITHUB_ENV
+        if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' && github.event.pull_request.merged == true
 
       - name: Deploy Bootstrap 5 static webpage for my-site
         uses: appleboy/ssh-action@master
@@ -21,7 +22,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           username: ${{ secrets.SSH_USERNAME }}
           script: |
-            if [ "${{ steps.pr-merged-check.outputs.merged }}" == "true" ]; then
+            if [ "${{ env.merged }}" == "true" ]; then
               cd /var/www/my-site
               git pull
               echo 'Deployment successful to Digital Ocean'
